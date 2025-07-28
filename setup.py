@@ -8,7 +8,13 @@ and providing guidance on getting the required tokens and paths.
 
 import os
 import sys
-from pathlib import Path
+
+# Add the src directory to the Python path
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'src'))
+
+from github_tracker.config.settings import Settings
+from github_tracker.utils.validator import validate_configuration, print_missing_variables
+
 
 def create_env_file():
     """Create a .env file with user input"""
@@ -84,6 +90,23 @@ def create_env_file():
     if not max_commits:
         max_commits = "10"
     
+    # Get filtering options
+    print()
+    print("4. GitHub Filtering Options")
+    print()
+    
+    filter_quartz = input("Filter out Quartz sync commits? (Y/n): ").strip().lower()
+    if not filter_quartz or filter_quartz == 'y':
+        filter_quartz = "true"
+    else:
+        filter_quartz = "false"
+    
+    make_readable = input("Make commit messages readable? (Y/n): ").strip().lower()
+    if not make_readable or make_readable == 'y':
+        make_readable = "true"
+    else:
+        make_readable = "false"
+    
     # Create .env file
     env_content = f"""# GitHub Configuration
 GITHUB_TOKEN={github_token}
@@ -96,6 +119,11 @@ DAILY_NOTES_FOLDER={daily_notes_folder}
 # Application Configuration
 DAYS_TO_BACKFILL={days_backfill}
 MAX_COMMITS_PER_DAY={max_commits}
+
+# GitHub Filtering and Formatting
+FILTER_QUARTZ_SYNC={filter_quartz}
+MAKE_COMMITS_READABLE={make_readable}
+QUARTZ_FILTER_KEYWORDS=quartz,sync,update,auto
 """
     
     try:
@@ -122,6 +150,7 @@ MAX_COMMITS_PER_DAY={max_commits}
         print(f"❌ Error creating .env file: {e}")
         return
 
+
 def test_configuration():
     """Test the current configuration"""
     print("🧪 Testing Configuration")
@@ -133,40 +162,27 @@ def test_configuration():
         return
     
     try:
-        # Import config to test
-        import config
-        
-        # Test required variables
-        required_vars = [
-            ('GITHUB_TOKEN', config.GITHUB_TOKEN),
-            ('GITHUB_USERNAME', config.GITHUB_USERNAME),
-            ('OBSIDIAN_VAULT_PATH', config.OBSIDIAN_VAULT_PATH)
-        ]
-        
-        missing_vars = []
-        for var_name, var_value in required_vars:
-            if not var_value:
-                missing_vars.append(var_name)
+        # Test configuration
+        settings = Settings()
+        missing_vars = validate_configuration(settings)
         
         if missing_vars:
-            print("❌ Missing required variables:")
-            for var in missing_vars:
-                print(f"   - {var}")
+            print_missing_variables(missing_vars)
             return
         
         print("✅ All required variables are set")
         
         # Test Obsidian path
-        if os.path.exists(config.OBSIDIAN_VAULT_PATH):
+        if os.path.exists(settings.obsidian_vault_path):
             print("✅ Obsidian vault path exists")
         else:
             print("⚠️  Obsidian vault path does not exist")
         
         # Test GitHub connection
         print("🔍 Testing GitHub connection...")
-        from github_stats import GitHubStats
+        from github_tracker.core.github_client import GitHubClient
         
-        github = GitHubStats()
+        github = GitHubClient(settings)
         repos = github.get_user_repos()
         print(f"✅ Connected to GitHub! Found {len(repos)} repositories")
         
@@ -177,12 +193,14 @@ def test_configuration():
     except Exception as e:
         print(f"❌ Configuration test failed: {e}")
 
+
 def main():
     """Main setup function"""
     if len(sys.argv) > 1 and sys.argv[1] == "test":
         test_configuration()
     else:
         create_env_file()
+
 
 if __name__ == "__main__":
     main() 
