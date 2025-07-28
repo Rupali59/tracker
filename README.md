@@ -153,6 +153,67 @@ Example output:
 
 For troubleshooting, you can add debug prints by modifying the code or check the console output for detailed information about the process.
 
+## TODO / Upcoming Features
+
+### 🔄 **WakaTime Integration**
+- [ ] **WakaTime API Integration**: Fetch coding activity data from WakaTime API
+- [ ] **Coding Time Tracking**: Display daily coding hours and activity patterns
+- [ ] **Language Statistics**: Show programming languages used and time spent
+- [ ] **Project Breakdown**: Track time spent on different projects/repositories
+- [ ] **Productivity Insights**: Compare coding time with GitHub commits
+
+### 📊 **Google Timeline History**
+- [ ] **Location Data**: Import location history from Google Timeline
+- [ ] **Activity Patterns**: Track daily movement and location patterns
+- [ ] **Travel Insights**: Identify travel days and locations visited
+- [ ] **Time-based Analysis**: Correlate location data with coding activity
+- [ ] **Privacy Controls**: Configurable data retention and privacy settings
+
+### 🔍 **Search History & Web Activity**
+- [ ] **Browser Search History**: Import search queries from Chrome/Firefox/Safari
+- [ ] **Search Patterns**: Analyze what you searched for and when
+- [ ] **Topic Clustering**: Group related searches by topic and time
+- [ ] **Research Tracking**: Track research sessions and learning patterns
+- [ ] **Search Insights**: Identify trending topics and interests over time
+- [ ] **Cross-Platform Search**: Aggregate searches from multiple browsers and devices
+
+### 💰 **Financial Information**
+- [ ] **Expense Tracking**: Import and categorize financial transactions
+- [ ] **Spending Patterns**: Analyze daily/weekly/monthly spending habits
+- [ ] **Budget Integration**: Track budget vs actual spending
+- [ ] **Financial Goals**: Monitor progress towards financial objectives
+- [ ] **Expense Categories**: Auto-categorize transactions (food, transport, etc.)
+
+### 🧠 **NLP & AI Capabilities**
+- [ ] **Daily Activity Summarization**: Use NLP to generate natural language summaries of daily activities
+- [ ] **Intent Recognition**: Understand what you were trying to accomplish each day
+- [ ] **Topic Modeling**: Automatically categorize activities and interests
+- [ ] **Sentiment Analysis**: Analyze mood and productivity patterns from activities
+- [ ] **Pattern Recognition**: Identify recurring activities and habits
+- [ ] **Smart Categorization**: Auto-categorize activities using AI (work, learning, entertainment, etc.)
+- [ ] **Contextual Understanding**: Understand relationships between different activities
+- [ ] **Predictive Insights**: Predict productivity patterns and suggest optimizations
+
+### 🎯 **Enhanced Analytics**
+- [ ] **Cross-Platform Correlation**: Link GitHub activity with WakaTime, location, finances, and search history
+- [ ] **Productivity Metrics**: Calculate productivity scores based on multiple data sources
+- [ ] **Trend Analysis**: Identify patterns across coding, location, spending, and search behavior
+- [ ] **Goal Tracking**: Set and monitor personal development goals
+- [ ] **Data Visualization**: Create charts and graphs for better insights
+- [ ] **Activity Timeline**: Create comprehensive daily activity timelines
+- [ ] **Behavioral Insights**: Understand your daily routines and patterns
+
+### 🔧 **Technical Improvements**
+- [ ] **Modular Architecture**: Extend current class-based structure for new data sources
+- [ ] **API Rate Limiting**: Implement proper rate limiting for all external APIs
+- [ ] **Data Caching**: Cache API responses to reduce API calls
+- [ ] **Error Handling**: Robust error handling for network issues and API failures
+- [ ] **Configuration Management**: Enhanced settings for new integrations
+- [ ] **NLP Pipeline**: Integrate spaCy, NLTK, or transformers for text processing
+- [ ] **Search History Parsers**: Create parsers for different browser history formats
+- [ ] **Data Privacy**: Implement encryption and secure storage for sensitive data
+- [ ] **Real-time Processing**: Stream processing for live activity tracking
+
 ## Contributing
 
 Feel free to submit issues and enhancement requests!
