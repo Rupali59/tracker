@@ -1,0 +1,26 @@
+# GitHub Configuration
+GITHUB_TOKEN=your_github_personal_access_token_here
+GITHUB_USERNAME=your_github_username_here
+
+# Obsidian Configuration
+OBSIDIAN_VAULT_PATH=/Users/rupalib59/Study tracker
+DAILY_NOTES_FOLDER=Calendar
+
+# Application Configuration
+DAYS_TO_BACKFILL=30
+MAX_COMMITS_PER_DAY=10
+
+# GitHub Filtering and Formatting
+FILTER_QUARTZ_SYNC=true
+MAKE_COMMITS_READABLE=true
+QUARTZ_FILTER_KEYWORDS=quartz,sync,update,auto
+
+# AI Integration (Optional)
+ENABLE_AI_SUMMARY=true
+OPENAI_API_KEY=your_openai_api_key_here
+AI_SUMMARY_PROMPT=Generate a brief daily summary of the GitHub activity, focusing on key accomplishments and progress made.
+
+# Commit Display Settings
+SHOW_COMMIT_TIME=true
+BRIEF_COMMIT_FORMAT=true
+MAX_FILES_DISPLAYED=3 

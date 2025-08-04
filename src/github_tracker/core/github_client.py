@@ -26,14 +26,20 @@ class GitHubClient:
         }
     
     def get_user_repos(self) -> List[Dict]:
-        """Get all repositories for the user."""
+        """Get all repositories for the user (including private ones)."""
         logger.info(f"Fetching repositories for user: {self.username}")
-        url = f"https://api.github.com/users/{self.username}/repos"
+        
+        # Use authenticated endpoint to get all repos (public + private)
+        url = "https://api.github.com/user/repos"
         response = requests.get(url, headers=self.headers)
         response.raise_for_status()
-        repos = response.json()
-        logger.info(f"Found {len(repos)} repositories")
-        return repos
+        all_repos = response.json()
+        
+        # Filter to only user's own repositories
+        user_repos = [repo for repo in all_repos if repo['owner']['login'] == self.username]
+        
+        logger.info(f"Found {len(user_repos)} repositories (including private)")
+        return user_repos
     
     def get_commits_for_repo(self, repo_name: str, since_date: datetime, until_date: datetime) -> List[Dict]:
         """Get commits for a specific repository within a date range."""
@@ -54,8 +60,15 @@ class GitHubClient:
         while True:
             params['page'] = page
             logger.debug(f"Fetching page {page} for {repo_name}")
-            response = requests.get(url, headers=self.headers, params=params)
-            response.raise_for_status()
+            try:
+                response = requests.get(url, headers=self.headers, params=params, timeout=15)
+                response.raise_for_status()
+            except requests.exceptions.Timeout:
+                logger.warning(f"Timeout fetching page {page} for {repo_name}")
+                break
+            except requests.exceptions.RequestException as e:
+                logger.error(f"Request error fetching page {page} for {repo_name}: {e}")
+                break
             
             page_commits = response.json()
             if not page_commits:
@@ -87,16 +100,25 @@ class GitHubClient:
         """Get detailed information about a specific commit."""
         logger.debug(f"Fetching details for commit {commit_sha[:8]} in {repo_name}")
         url = f"https://api.github.com/repos/{self.username}/{repo_name}/commits/{commit_sha}"
-        response = requests.get(url, headers=self.headers)
         
-        if response.status_code == 404:
-            logger.warning(f"Commit {commit_sha[:8]} not found in {repo_name}")
+        try:
+            response = requests.get(url, headers=self.headers, timeout=10)
+            
+            if response.status_code == 404:
+                logger.warning(f"Commit {commit_sha[:8]} not found in {repo_name}")
+                return None
+            
+            response.raise_for_status()
+            commit_details = response.json()
+            logger.debug(f"Successfully fetched details for commit {commit_sha[:8]}")
+            return commit_details
+            
+        except requests.exceptions.Timeout:
+            logger.warning(f"Timeout fetching details for commit {commit_sha[:8]} in {repo_name}")
             return None
-        
-        response.raise_for_status()
-        commit_details = response.json()
-        logger.debug(f"Successfully fetched details for commit {commit_sha[:8]}")
-        return commit_details
+        except requests.exceptions.RequestException as e:
+            logger.warning(f"Request error fetching details for commit {commit_sha[:8]} in {repo_name}: {e}")
+            return None
     
     def analyze_file_changes(self, commit_details: Dict) -> Dict:
         """Analyze file changes in a commit."""
@@ -237,13 +259,32 @@ class GitHubClient:
         # Group commits by date
         daily_commits = defaultdict(list)
         
-        for commit in all_commits:
+        logger.info("Processing commit details...")
+        for i, commit in enumerate(all_commits, 1):
+            if i % 10 == 0:  # Show progress every 10 commits
+                logger.info(f"Processing commit {i}/{len(all_commits)}")
+            
             date = datetime.fromisoformat(commit['commit']['author']['date'].replace('Z', '+00:00'))
             date_key = date.strftime('%Y-%m-%d')
             
-            # Get detailed commit information
+            # Get detailed commit information (with error handling)
             repo_name = commit['repository']['name']
-            commit_details = self.get_commit_details(repo_name, commit['sha'])
+            try:
+                commit_details = self.get_commit_details(repo_name, commit['sha'])
+            except Exception as e:
+                logger.warning(f"Failed to get details for commit {commit['sha'][:8]} in {repo_name}: {e}")
+                commit_details = None
+            
+            summary = self.generate_commit_summary(commit, commit_details)
+            daily_commits[date_key].append(summary)
+            
+            # Get detailed commit information (with error handling)
+            repo_name = commit['repository']['name']
+            try:
+                commit_details = self.get_commit_details(repo_name, commit['sha'])
+            except Exception as e:
+                logger.warning(f"Failed to get details for commit {commit['sha'][:8]} in {repo_name}: {e}")
+                commit_details = None
             
             summary = self.generate_commit_summary(commit, commit_details)
             daily_commits[date_key].append(summary)

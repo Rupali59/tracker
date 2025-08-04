@@ -8,11 +8,9 @@ A Python application that fetches your GitHub commit history and automatically u
 - 📊 **Detailed Statistics**: Analyzes file changes, additions, deletions, and file types
 - 📝 **Obsidian Integration**: Automatically updates your daily notes with GitHub activity
 - 🔄 **Backfill Support**: Fills in historical data for previous days
-- 📈 **Rich Formatting**: Beautiful markdown formatting with emojis and links
-- 🚫 **Smart Filtering**: Automatically filters out Quartz sync commits and other noise
-- 📝 **Human-Readable Commits**: Converts technical commit messages to readable format
-- 📅 **Monthly Calendars**: Automatically creates monthly calendar overview files
-- ⚙️ **Configurable**: Customizable settings for date ranges and output format
+- 🤖 **AI-Powered Summaries**: Automatic daily summaries using OpenAI
+- ⏱️ **Time Estimates**: Estimated time spent on each commit
+- 📱 **Brief Format**: Compact commit display with smaller font
 
 ## Installation
 
@@ -41,7 +39,7 @@ GITHUB_TOKEN=your_github_personal_access_token_here
 GITHUB_USERNAME=your_github_username_here
 
 # Obsidian Configuration
-OBSIDIAN_VAULT_PATH=D:\Study tracker
+OBSIDIAN_VAULT_PATH=/Users/rupalib59/Study tracker
 DAILY_NOTES_FOLDER=Calendar
 
 # Application Configuration
@@ -52,6 +50,16 @@ MAX_COMMITS_PER_DAY=10
 FILTER_QUARTZ_SYNC=true
 MAKE_COMMITS_READABLE=true
 QUARTZ_FILTER_KEYWORDS=quartz,sync,update,auto
+
+# AI Integration (Optional)
+ENABLE_AI_SUMMARY=true
+OPENAI_API_KEY=your_openai_api_key_here
+AI_SUMMARY_PROMPT=Generate a brief daily summary of the GitHub activity, focusing on key accomplishments and progress made.
+
+# Commit Display Settings
+SHOW_COMMIT_TIME=true
+BRIEF_COMMIT_FORMAT=true
+MAX_FILES_DISPLAYED=3
 ```
 
 ### Getting Your GitHub Token
@@ -80,78 +88,26 @@ The application will:
 
 ## Output Format
 
-The application adds a "📊 GitHub Activity" section to your daily notes with:
-
-- **Summary statistics**: Total commits, repositories worked on, lines changed
-- **Individual commits**: Repository name, commit message, file changes
-- **File analysis**: File types, additions/deletions, individual file changes
-- **Links**: Direct links to commits on GitHub
+The application adds a "📊 GitHub Activity" section to your daily notes with AI summaries, commit details, and time estimates.
 
 Example output:
 ```markdown
 ## 📊 GitHub Activity
 
+### 🤖 AI Summary
+Today I worked on improving the user authentication system and fixing several bugs in the API.
+
 **Summary:** 3 commits across 2 repositories
 **Changes:** +45 -12 lines
 
-### [my-project](https://github.com/username/my-project/commit/abc12345) - abc12345
-**Add new feature for user authentication**
-- Files changed: 2
-- Additions: +25
-- Deletions: -5
-- File types: 1 .py files, 1 .md files
-- Files:
-  - ✏️ src/auth.py (+20 -3)
-  - ✏️ README.md (+5 -2)
+<small>**[my-project](https://github.com/username/my-project/commit/abc12345)** - abc12345 (~30 min)</small>
+<small>Add new feature for user authentication</small>
+<small>📄 2 files, +25, -5, 1 .py, 1 .js</small>
 ```
 
-## Features in Detail
+## Documentation
 
-### Commit Analysis
-- Fetches commits from all your repositories
-- Analyzes file changes (additions, deletions, file types)
-- Provides detailed statistics for each commit
-- Links directly to GitHub commit pages
-- Filters out Quartz sync commits and other noise
-- Converts technical commit messages to human-readable format
-
-### Obsidian Integration
-- Automatically creates daily notes if they don't exist
-- Updates existing daily notes with GitHub sections
-- Preserves existing content in daily notes
-- Uses proper markdown formatting for Obsidian
-- Supports date-based folder structure: `Calendar/[year]/[month]/[date].md`
-- Creates monthly calendar overview files: `Calendar/[year]/[Month].md`
-
-### Backfill Support
-- Processes historical data for specified number of days
-- Can be run multiple times safely
-- Updates only the GitHub section, preserving other content
-
-## Configuration Options
-
-- `DAYS_TO_BACKFILL`: Number of days to look back (default: 30)
-- `MAX_COMMITS_PER_DAY`: Maximum commits to show per day (default: 10)
-- `DAILY_NOTES_FOLDER`: Folder name for daily notes in your vault (default: "Calendar")
-- `FILTER_QUARTZ_SYNC`: Filter out Quartz sync commits (default: true)
-- `MAKE_COMMITS_READABLE`: Convert commit messages to readable format (default: true)
-- `QUARTZ_FILTER_KEYWORDS`: Keywords to filter out (comma-separated)
-
-## Troubleshooting
-
-### Common Issues
-
-1. **GitHub API Rate Limits**: The application respects GitHub's rate limits. If you hit limits, wait a few minutes and try again.
-
-2. **Missing Daily Notes**: The application will create daily notes automatically if they don't exist.
-
-3. **Permission Errors**: Ensure your GitHub token has the necessary permissions (`repo` and `read:user` scopes).
-
-4. **Path Issues**: Make sure your `OBSIDIAN_VAULT_PATH` points to the correct Obsidian vault folder.
-
-### Debug Mode
-
-For troubleshooting, you can add debug prints by modifying the code or check the console output for detailed information about the process.
+For detailed documentation, see the [docs](docs/) folder.
 
 ## TODO / Upcoming Features
 
